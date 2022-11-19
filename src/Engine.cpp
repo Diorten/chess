@@ -8,6 +8,7 @@
 
 void Engine::debugDisplay() const
 {
+    Map map;
     std::cout << "  A     B     C     D     E     F     G     H\n";
     int a = 0;
     for (int x = 0; x < 4; x++)
@@ -34,11 +35,11 @@ void Engine::debugDisplay() const
         {
             if (i % 2 == 0)
             {
-                std::cout << WHITE << "  " << eBoard[a][i].whichPiece.name << "  " << RESET;
+                std::cout << WHITE << "  " << map.magicPieceName(eBoard[a][i].whichPiece.piecesNames) << "  " << RESET;
             }
             else 
             {
-                std::cout << BLACK << "  " << eBoard[a][i].whichPiece.name << "  " << RESET;
+                std::cout << BLACK << "  " << map.magicPieceName(eBoard[a][i].whichPiece.piecesNames) << "  " << RESET;
             }
         }
         a += 1;
@@ -83,11 +84,11 @@ void Engine::debugDisplay() const
         {
             if (i % 2 == 0)
             {
-                std::cout << BLACK << "  " << eBoard[a][i].whichPiece.name << "  " << RESET;
+                std::cout << BLACK << "  " << map.magicPieceName(eBoard[a][i].whichPiece.piecesNames) << "  " << RESET;
             }
             else 
             {
-                std::cout << WHITE << "  " << eBoard[a][i].whichPiece.name << "  " << RESET;
+                std::cout << WHITE << "  " << map.magicPieceName(eBoard[a][i].whichPiece.piecesNames) << "  " << RESET;
             }
         }
         a += 1;
@@ -116,7 +117,7 @@ void Engine::debugDisplay() const
 
 void Engine::movePiece(int x, int y, int wx, int wy)
 {
-    if (checkIfExists(x, y, eBoard) && checkIfExists(wx, wy, eBoard))
+    if (checkIfExists(x, y))
     {
         eBoard[x][y] = eBoard[wx][wy];
         eBoard[wx][wy] = eBoard[0][8];
@@ -130,14 +131,24 @@ void Engine::playPiece()
     int wasY, wasX, newY, newX;
     std::cin >> wasX >> wasY >> newX >> newY;
 
-    movePiece(newY, newX, wasY, wasX);
+    if (eBoard[wasX][wasY].whichPiece.piecesNames == King)
+    {
+        if (checkLegality(newX, newY, wasX, wasY) == true)
+        {
+            movePiece(newY, newX, wasY, wasX);
+        }
+    }
+    else
+        {
+            movePiece(newY, newX, wasY, wasX);
+        }
 
     system("clear");
     debugDisplay();
     }
 }
 
-bool Engine::checkIfExists(int x, int y, std::vector < std::vector <Field>> &board) const
+bool Engine::checkIfExists(int x, int y) const
 {
     if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
     {
@@ -145,4 +156,47 @@ bool Engine::checkIfExists(int x, int y, std::vector < std::vector <Field>> &boa
     }
     std::cout << "Podaj właściwe koordynaty!";
     return false;
+}
+
+void Engine::addPoints(bool who, int points)
+{
+    if (who == true)
+    {
+        playerScore += points;
+        secondScore -= points;
+    }
+    else
+    {
+        playerScore -= points;
+        secondScore += points;
+    }
+}
+
+bool Engine::checkLegality(int x, int y, int wx, int wy) const
+{
+    if (eBoard[wx][wy].whichPiece.isAlive == true)
+    {
+        switch (eBoard[wx][wy].whichPiece.piecesNames)
+        {
+        case King:
+            if (
+                
+            )
+            break;
+        case Queen:
+
+        case Knight:
+
+        case Bishop:
+
+        case Rook:
+
+        case Pawn:
+
+        case Blank:
+
+        default:
+            break;
+        }
+    }
 }
