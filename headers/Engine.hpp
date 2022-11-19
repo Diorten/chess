@@ -23,4 +23,6 @@ public:
     void debugDisplay() const;
     void playPiece();
     void movePiece(int x, int y, int wx, int wy);
+    bool checkIfExists(int x, int y, std::vector < std::vector <Field>> &board) const;
+
 };

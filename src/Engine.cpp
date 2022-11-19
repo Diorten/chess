@@ -116,8 +116,11 @@ void Engine::debugDisplay() const
 
 void Engine::movePiece(int x, int y, int wx, int wy)
 {
-    eBoard[x][y] = eBoard[wx][wy];
-    eBoard[wx][wy] = eBoard[0][8];
+    if (checkIfExists(x, y, eBoard) && checkIfExists(wx, wy, eBoard))
+    {
+        eBoard[x][y] = eBoard[wx][wy];
+        eBoard[wx][wy] = eBoard[0][8];
+    }
 }
 
 void Engine::playPiece()
@@ -132,4 +135,14 @@ void Engine::playPiece()
     system("clear");
     debugDisplay();
     }
+}
+
+bool Engine::checkIfExists(int x, int y, std::vector < std::vector <Field>> &board) const
+{
+    if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
+    {
+        return true;
+    }
+    std::cout << "Podaj właściwe koordynaty!";
+    return false;
 }
