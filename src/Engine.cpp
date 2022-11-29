@@ -5,8 +5,10 @@
 #define RESET "\033[0m"
 #define WHITE "\033[0;30m\033[47m"
 #define BLACK "\033[37m"
+#define _king 1
+#define _queen 2
 
-void Engine::debugDisplay() const
+void Engine::debugDisplay()
 {
     Map map;
     std::cout << "  A     B     C     D     E     F     G     H\n";
@@ -112,45 +114,61 @@ void Engine::debugDisplay() const
         }
         std::cout << "\n";
     }
+    if (false_move)
+    {
+        std::cout << "Podaj właściwy ruch!\n";
+    }
+    false_move = false;
+}
+
+bool Engine::ifThereIsFigure (int y, int x) const
+{
+    if (eBoard[y][x].whichPiece.isAlive == true)
+    {
+        return true;
+    }
+    std::cout << "Tutaj nie ma figury!";
+    return false;
 }
 
 
-void Engine::movePiece(int x, int y, int wx, int wy)
+void Engine::movePiece(int moveToY, int moveFromY, int moveToX, int moveFromX)
 {
-    if (checkIfExists(x, y))
+    if (checkIfExists(moveToY, moveToX))
     {
-        eBoard[x][y] = eBoard[wx][wy];
-        eBoard[wx][wy] = eBoard[0][8];
+        if (ifThereIsFigure(moveFromY, moveFromX))
+        {
+            eBoard[moveToY][moveToX].whichPiece = eBoard[moveFromY][moveFromX].whichPiece;
+            eBoard[moveFromY][moveFromX].whichPiece.isAlive = false;
+            eBoard[moveFromY][moveFromX].whichPiece.piecesNames = Blank;
+            eBoard[moveFromY][moveFromX].whichPiece.points = 0;
+        }
     }
 }
 
-void Engine::playPiece()
+void Engine::playGame()
 {
-    while(1)
-    {
-    int wasY, wasX, newY, newX;
-    std::cin >> wasX >> wasY >> newX >> newY;
+    int moveToY, moveToX, moveFromY, moveFromX;
+    std::cout << "Podaj rząd figury do przesunięcia: ";
+    std::cin >> moveFromY;
+    std::cout << "Podaj kolumnę figury do przesunięcia: ";
+    std::cin >> moveFromX;
+    std::cout << "Podaj rząd gdzie ustawić figurę: ";
+    std::cin >> moveToY;
+    std::cout << "Podaj kolumnę gdzie ustawić figurę";
+    std::cin >> moveToX;
 
-    if (eBoard[wasX][wasY].whichPiece.piecesNames == King)
+    if (checkLegality(moveToX, moveToY, moveFromX, moveFromY) == true)
     {
-        if (checkLegality(newX, newY, wasX, wasY) == true)
-        {
-            movePiece(newY, newX, wasY, wasX);
-        }
+        movePiece(moveToY, moveFromY, moveToX, moveFromX);
     }
-    else
-        {
-            movePiece(newY, newX, wasY, wasX);
-        }
-
-    system("clear");
+    //system("clear");
     debugDisplay();
-    }
 }
 
-bool Engine::checkIfExists(int x, int y) const
+bool Engine::checkIfExists(int y, int x) const
 {
-    if ((x >= 0 && x < 8) && (y >= 0 && y < 8))
+    if ((y >= 0 && y < 8) && (x >= 0 && x < 8))
     {
         return true;
     }
@@ -174,29 +192,72 @@ void Engine::addPoints(bool who, int points)
 
 bool Engine::checkLegality(int x, int y, int wx, int wy) const
 {
-    if (eBoard[wx][wy].whichPiece.isAlive == true)
-    {
-        switch (eBoard[wx][wy].whichPiece.piecesNames)
+    if (eBoard[wy][wx].whichPiece.isAlive == true)
+    { 
+        switch (eBoard[wy][wx].whichPiece.piecesNames)
         {
-        case King:
-            if (
-                
-            )
-            break;
-        case Queen:
-
-        case Knight:
-
-        case Bishop:
-
-        case Rook:
-
-        case Pawn:
-
-        case Blank:
-
-        default:
-            break;
+            case King:
+            //if (eBoard[y][x].whichPiece.isBlack == false)
+                //checkIfRoszada
+                if ((((x - wx) >=-1 && (x - wx) <= 1)) && ((y - wy) >= -1 && (y - wy) <= 1))
+                {
+                    return true;
+                }
+                break;
+            case Queen:
+                if (
+                    ((x - wx) == (y - wy))||
+                    ((wx - x) == (wy - y))||
+                    ((wx - x) == (y - wy))||
+                    (wx == x)||
+                    (wy == y)
+                )
+                {
+                    return true;
+                }
+                break;
+            case Knight:
+                if ((((wx - x) * (wy - y)) == 2) || ((wx - x) * (wy - y)) == -2)
+                {
+                    return true;
+                }
+                break;
+            case Bishop:
+                if (((x - wx) == (y - wy))||
+                    ((wx - x) == (wy - y))||
+                    ((wx - x) == (y - wy)))
+                {
+                    return true;
+                }
+                break;
+            case Rook:
+                if ((wx == x) || (wy == y))
+                {
+                    return true;
+                } 
+                break;
+            case Pawn:
+                if (eBoard[wy][wx].whichPiece.black == false)
+                {
+                    if ((wx == x) && (wy == y-1))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if ((wx == x) && (wy == y + 1))
+                    {
+                        return true;
+                    }
+                }
+                break;
+            case Blank:
+                return false;
+                break;
+            default:
+                break;
         }
     }
+    return false;
 }

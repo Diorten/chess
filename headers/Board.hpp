@@ -3,6 +3,12 @@
 #include <string>
 #include <map>
 
+
+enum PiecesNames
+{
+    King, Queen, Knight, Bishop, Rook, Pawn, Blank
+};
+
 class Map
 {
 public:
@@ -10,7 +16,7 @@ public:
     {
         const std::map<PiecesNames, const char*> pieceNameType
             {
-                {PiecesNames::Blank, "   "},
+                {PiecesNames::Blank, "  "},
                 {PiecesNames::Pawn, "P "},
                 {PiecesNames::Rook, "R "},
                 {PiecesNames::Bishop, "B "},
@@ -24,11 +30,6 @@ public:
 
 };
 
-enum PiecesNames
-{
-    King, Queen, Knight, Bishop, Rook, Pawn, Blank
-};
-
 enum GameState
 {
     Won, Lost, Running
@@ -39,6 +40,7 @@ struct Piece
     bool isAlive;
     PiecesNames piecesNames;
     int points;
+    bool black;
 };
 
 struct Field
@@ -56,7 +58,7 @@ public:
         Board.resize(8);
         for (int i = 0; i < 8; i++)
             {
-                Board[i].resize(9);
+                Board[i].resize(8);
             }
         char a = 'A';
         for (int i = 0; i < 8; i++)
@@ -70,9 +72,6 @@ public:
                     }
                 a += 1;
             }
-
-        Board[0][8].whichPiece.isAlive = false; Board[0][8].whichPiece.piecesNames = Blank; Board[0][8].whichPiece.points = 0;
-
         Board[0][0].whichPiece.isAlive = true; Board[0][0].whichPiece.piecesNames = Rook; Board[0][0].whichPiece.points = 4;
         Board[7][7].whichPiece = Board[0][7].whichPiece = Board[7][0].whichPiece = Board[0][0].whichPiece;
 
@@ -93,6 +92,7 @@ public:
             Board[1][i].whichPiece.isAlive = true;
             Board[1][i].whichPiece.piecesNames = Pawn;
             Board[1][i].whichPiece.points = 1;
+            Board[1][i].whichPiece.black = false;
         }
 
         for (auto i = 0; i < 8; i++)
@@ -100,6 +100,7 @@ public:
             Board[6][i].whichPiece.isAlive = true;
             Board[6][i].whichPiece.piecesNames = Pawn;
             Board[6][i].whichPiece.points = 1;
+            Board[6][i].whichPiece.black = true;
         }
 
         for (auto i = 2; i < 6; i++)
@@ -110,7 +111,7 @@ public:
                 Board[i][j].whichPiece.piecesNames = Blank;
                 Board[i][j].whichPiece.points = 0;
             }
-        }      
+        }
     }
 };
 
