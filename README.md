@@ -9,7 +9,7 @@ Project still in work...
 - Check if move is possible (not blocked by other figures)
 - En passant
 - Promotion
-- Roszada xDD
+- Castling - DONE
 - Pinning
 - 50moves 
 - Stockfish connected

@@ -41,6 +41,7 @@ struct Piece
     PiecesNames piecesNames;
     int points;
     bool black;
+    bool alredyMoved;
 };
 
 struct Field
@@ -72,7 +73,7 @@ public:
                     }
                 a += 1;
             }
-        Board[0][0].whichPiece.isAlive = true; Board[0][0].whichPiece.piecesNames = Rook; Board[0][0].whichPiece.points = 4;
+        Board[0][0].whichPiece.isAlive = true; Board[0][0].whichPiece.piecesNames = Rook; Board[0][0].whichPiece.points = 4; Board[0][0].whichPiece.alredyMoved = false;
         Board[7][7].whichPiece = Board[0][7].whichPiece = Board[7][0].whichPiece = Board[0][0].whichPiece;
 
         Board[0][1].whichPiece.isAlive = true; Board[0][1].whichPiece.piecesNames = Knight; Board[0][1].whichPiece.points = 3;
@@ -81,11 +82,11 @@ public:
         Board[7][5].whichPiece.isAlive = true; Board[7][5].whichPiece.piecesNames = Bishop; Board[7][5].whichPiece.points = 3;
         Board[0][2].whichPiece = Board[0][5].whichPiece = Board[7][2].whichPiece = Board[7][5].whichPiece;
 
-        Board[0][3].whichPiece.isAlive = true; Board[0][3].whichPiece.piecesNames = Queen; Board[0][3].whichPiece.points = 8;
-        Board[7][3].whichPiece = Board[0][3].whichPiece;
+        Board[0][3].whichPiece.isAlive = true; Board[0][4].whichPiece.piecesNames = Queen; Board[0][3].whichPiece.points = 8;
+        Board[7][3].whichPiece = Board[0][4].whichPiece;
 
-        Board[0][4].whichPiece.isAlive = true; Board[0][4].whichPiece.piecesNames = King; Board[0][4].whichPiece.points = 10;
-        Board[7][4].whichPiece = Board[0][4].whichPiece;
+        Board[0][4].whichPiece.isAlive = true; Board[0][3].whichPiece.piecesNames = King; Board[0][4].whichPiece.points = 10; Board[0][4].whichPiece.alredyMoved = false;
+        Board[7][4].whichPiece = Board[0][3].whichPiece;
 
         for (auto i = 0; i < 8; i++)
         {

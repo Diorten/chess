@@ -8,7 +8,7 @@
 #define _king 1
 #define _queen 2
 
-void Engine::debugDisplay()
+void Engine::debugDisplay() const
 {
     Map map;
     std::cout << "  A     B     C     D     E     F     G     H\n";
@@ -114,11 +114,6 @@ void Engine::debugDisplay()
         }
         std::cout << "\n";
     }
-    if (false_move)
-    {
-        std::cout << "Podaj właściwy ruch!\n";
-    }
-    false_move = false;
 }
 
 bool Engine::ifThereIsFigure (int y, int x) const
@@ -190,7 +185,7 @@ void Engine::addPoints(bool who, int points)
     }
 }
 
-bool Engine::checkLegality(int x, int y, int wx, int wy) const
+bool Engine::checkLegality(int x, int y, int wx, int wy)
 {
     if (eBoard[wy][wx].whichPiece.isAlive == true)
     { 
@@ -198,8 +193,11 @@ bool Engine::checkLegality(int x, int y, int wx, int wy) const
         {
             case King:
             //if (eBoard[y][x].whichPiece.isBlack == false)
-                //checkIfRoszada
-                if ((((x - wx) >=-1 && (x - wx) <= 1)) && ((y - wy) >= -1 && (y - wy) <= 1))
+                if (checkCastling(wy, wx, y, x) == true)
+                {
+                    return false;
+                }
+                else if ((((x - wx) >=-1 && (x - wx) <= 1)) && ((y - wy) >= -1 && (y - wy) <= 1))
                 {
                     return true;
                 }
@@ -260,4 +258,65 @@ bool Engine::checkLegality(int x, int y, int wx, int wy) const
         }
     }
     return false;
+}
+
+
+bool Engine::checkCastling(int kingY, int kingX, int kingMoveY, int kingMoveX)
+{
+    if (eBoard[kingY][kingX].whichPiece.black == false)
+    {
+        if (eBoard[kingY][kingX].whichPiece.alredyMoved == false)
+        {
+            if (kingMoveX == 5)
+            {
+                if (eBoard[0][7].whichPiece.alredyMoved == false)
+                {
+                    makeCastlingTrue(0, 4, kingMoveY, kingMoveX, 0, 7, kingY, kingX);
+                    return true;
+                }
+            }
+            else if (kingMoveX == 1)
+            {
+                if (eBoard[0][0].whichPiece.alredyMoved == false)
+                {
+                    makeCastlingTrue(0, 2, kingMoveY, kingMoveX, 0, 0, kingY, kingX);
+                    return true;
+                }
+            }
+        }
+    }
+    else if (eBoard[kingY][kingX].whichPiece.black == true)
+    {
+        if (eBoard[kingY][kingX].whichPiece.alredyMoved == false)
+        {
+            if (kingMoveX == 5)
+            {
+                if (eBoard[7][7].whichPiece.alredyMoved == false)
+                {
+                    makeCastlingTrue(7, 4, kingMoveY, kingMoveX, 7, 7, kingY, kingX);
+                    return true;
+                }
+            }
+            else if (kingMoveX == 1)
+            {
+                if (eBoard[7][0].whichPiece.alredyMoved == false)
+                {
+                    makeCastlingTrue(7, 2, kingMoveY, kingMoveX, 7, 0, kingY, kingX);
+                    return true;
+                }
+            }          
+        }
+    }
+    return false;
+}
+
+void Engine::makeCastlingTrue(int rookY, int rookX, int kingY, int kingX, int wrookY, int wrookX, int wkingY, int wkingX)
+{
+    movePiece(rookY, wrookY, rookX, wrookX);
+    movePiece(kingY, wkingY, kingX, wkingX);
+}
+
+bool Engine::checkPromotion(int wasY, int wasX, int willY, int willX)
+{
+    
 }

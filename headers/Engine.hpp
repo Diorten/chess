@@ -24,10 +24,19 @@ public:
 
     bool ifThereIsFigure (int y, int x) const;
     void addPoints(bool who, int points);
-    void debugDisplay();
+    void debugDisplay() const;
     void playGame();
     void movePiece(int x, int y, int wx, int wy);
     bool checkIfExists(int x, int y) const;
+    void getPiece(int wasY, int wasX, int willY, int willX);
+    void makeCastlingTrue(int rookY, int rookX, int kingY, int kingX, int wrookY, int wrookX, int wkingY, int wkingX);
 
-    bool checkLegality(int x, int y, int wx, int wy) const;
+//Functions for checking interesting parts of chess game \/
+    bool checkLegality(int x, int y, int wx, int wy);
+    bool checkCastling(int kingY, int kingX, int kingMoveY, int kingMoveX);
+    bool checkPromotion(int wasY, int wasX, int willY, int willX);
+    bool checkLane(int wasY, int wasX, int willY, int willX) const;
+    bool check50moves();
+    bool checkCheck();
+    bool checkMate();
 };
