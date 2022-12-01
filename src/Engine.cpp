@@ -211,7 +211,10 @@ bool Engine::checkLegality(int x, int y, int wx, int wy)
                     (wy == y)
                 )
                 {
-                    return true;
+                    if (scanForMove(wy, wx, y, x))
+                    {
+                        return true;
+                    }
                 }
                 break;
             case Knight:
@@ -225,13 +228,19 @@ bool Engine::checkLegality(int x, int y, int wx, int wy)
                     ((wx - x) == (wy - y))||
                     ((wx - x) == (y - wy)))
                 {
-                    return true;
+                    if (scanForMove(wy, wx, y, x) == true)
+                    {
+                        return true;
+                    }
                 }
                 break;
             case Rook:
                 if ((wx == x) || (wy == y))
                 {
-                    return true;
+                    if (scanForMove(wy, wx, y, x) == true)
+                    {
+                        return true;
+                    }
                 } 
                 break;
             case Pawn:
@@ -239,14 +248,40 @@ bool Engine::checkLegality(int x, int y, int wx, int wy)
                 {
                     if ((wx == x) && (wy == y-1))
                     {
-                        return true;
+                        if (scanForMove(wy, wx, y, x) == true)
+                        {
+                            return true;
+                        }
+                    }
+                    else if (eBoard[wy][wx].whichPiece.alredyMoved == false)
+                    {
+                        if ((wx == x) && (wy == y - 2))
+                        {
+                            if (scanForMove(wy, wx, y, x) == true)
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
                 else
                 {
                     if ((wx == x) && (wy == y + 1))
                     {
-                        return true;
+                        if (scanForMove(wy, wx, y, x) == true)
+                        {
+                            return true;
+                        }
+                    }
+                    else if (eBoard[wy][wx].whichPiece.alredyMoved == false)
+                    {
+                        if ((wx == x) && (wy == y + 2))
+                        {
+                            if (scanForMove(wy, wx, y, x) == true)
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
                 break;
@@ -316,7 +351,264 @@ void Engine::makeCastlingTrue(int rookY, int rookX, int kingY, int kingX, int wr
     movePiece(kingY, wkingY, kingX, wkingX);
 }
 
+bool Engine::scanForMove(int fromY, int fromX, int toY, int toX)
+{
+    switch (eBoard[fromY][fromX].whichPiece.piecesNames)
+    {
+        case Rook:
+            if ((fromX - toX) < 0)
+            {
+                while (fromX < toX)
+                {
+                    if (eBoard[fromY][fromX + 1].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromX++;
+                }
+                return true;
+            }
+            else if ((fromX - toX) > 0)
+            {
+                while (fromX > toX)
+                {
+                    if (eBoard[fromY][fromX - 1].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromX--;
+                }
+                return true;
+            }
+            else if ((fromY - toY) < 0)
+            {
+                while (fromY < toY)
+                {
+                    if (eBoard[fromY + 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromY++;
+                }
+                return true;
+            }
+            else if ((fromY - toY) > 0)
+            {
+                while (fromY > toY)
+                {
+                    if (eBoard[fromY - 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                   fromY--;
+                }
+                return true;
+            }
+            break;
+        case Bishop:
+            if (((fromY - toY) < 0) && ((fromX - toX) < 0))
+            {
+                for (int i = fromY + 1; i < toY; i++)
+                {
+                    for (int j = fromX + 1; j < toX; j++)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) < 0) && ((fromX - toX) > 0))
+            {
+                for (int i = fromY + 1; i < toY; i++)
+                {
+                    for (int j = fromX - 1; j > toX; j--)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) > 0) && ((fromX - toX) > 0))
+            {
+                for (int i = fromY - 1; i > toY; i--)
+                {
+                    for (int j = fromX - 1; j > toX; j--)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) > 0) && ((fromX - toX) < 0))
+            {
+                for (int i = fromY - 1; i > toY; i--)
+                {
+                    for (int j = fromX + 1; j < toX; j++)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            break;
+        case Pawn:
+            if ((fromY - toY) < 0)
+            {
+                while (fromY < toY)
+                {
+                    if (eBoard[fromY + 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromY++;
+                }
+                return true;
+            }
+            else if ((fromY - toY) > 0)
+            {
+                while (fromY > toY)
+                {
+                    if (eBoard[fromY - 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromY--;
+                }
+                return true;
+            }
+            break;
+        case Queen:
+            if (((fromX - toX) < 0) && ((fromY - toY) == 0))
+            {
+                while (fromX < toX)
+                {
+                    if (eBoard[fromY][fromX + 1].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromX++;
+                }
+                return true;
+            }
+            else if (((fromX - toX) > 0) && ((fromY - toY) == 0))
+            {
+                while (fromX > toX)
+                {
+                    if (eBoard[fromY][fromX - 1].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromX--;
+                }
+                return true;
+            }
+            else if (((fromY - toY) < 0) && ((fromX - toX) == 0))
+            {
+                while (fromY < toY)
+                {
+                    if (eBoard[fromY + 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromY++;
+                }
+                return true;
+            }
+            else if (((fromY - toY) > 0) && ((fromX - toX) == 0))
+            {
+                while (fromY > toY)
+                {
+                    if (eBoard[fromY - 1][fromX].whichPiece.isAlive == true)
+                    {
+                        return false;
+                    }
+                    fromY--;
+                }
+                return true;
+            }
+            else if (((fromY - toY) < 0) && ((fromX - toX) < 0))
+            {
+                for (int i = fromY + 1; i < toY; i++)
+                {
+                    for (int j = fromX + 1; j < toX; j++)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) < 0) && ((fromX - toX) > 0))
+            {
+                for (int i = fromY + 1; i < toY; i++)
+                {
+                    for (int j = fromX - 1; j > toX; j--)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) > 0) && ((fromX - toX) > 0))
+            {
+                for (int i = fromY - 1; i > toY; i--)
+                {
+                    for (int j = fromX - 1; j > toX; j--)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            else if (((fromY - toY) > 0) && ((fromX - toX) < 0))
+            {
+                for (int i = fromY - 1; i > toY; i--)
+                {
+                    for (int j = fromX + 1; j < toX; j++)
+                    {
+                        if (eBoard[i][j].whichPiece.isAlive == true)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            break;
+        case King:
+        //no nic tu nie ma do sprawdzania kurwa xD
+            break;
+        case Blank:
+        //tutaj tez
+            break;
+        case Knight:
+        //no i tutaj to juz wgl 
+            break;
+    }
+    return false;
+}
+
 bool Engine::checkPromotion(int wasY, int wasX, int willY, int willX)
 {
-    
+    return false;
 }

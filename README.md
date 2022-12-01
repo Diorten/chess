@@ -6,7 +6,7 @@ Project still in work...
 - Drawing two colour board in terminal - DONE
 - Working moves of pieces - DONE
 - Checking if move is legal - DONE
-- Check if move is possible (not blocked by other figures)
+- Check if move is possible (not blocked by other figures) - DONE
 - En passant
 - Promotion
 - Castling - DONE

@@ -32,6 +32,7 @@ public:
     void makeCastlingTrue(int rookY, int rookX, int kingY, int kingX, int wrookY, int wrookX, int wkingY, int wkingX);
 
 //Functions for checking interesting parts of chess game \/
+    bool scanForMove(int fromY, int fromX, int toY, int toX);
     bool checkLegality(int x, int y, int wx, int wy);
     bool checkCastling(int kingY, int kingX, int kingMoveY, int kingMoveX);
     bool checkPromotion(int wasY, int wasX, int willY, int willX);
